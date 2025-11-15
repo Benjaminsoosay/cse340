@@ -1,39 +1,24 @@
-const invModel = require("../models/inventory-model");
-const utilities = require("../utilities/");
+// models/inventory-model.js
+const pool = require("../database/");
 
-async function buildByInventoryId(req, res, next) {
+/**
+ * Get a single vehicle by inventory id
+ * Uses a prepared statement to prevent SQL injection
+ */
+async function getInventoryById(invId) {
   try {
-    const inv_id = parseInt(req.params.invId);
-
-    if (isNaN(inv_id)) {
-      throw new Error("Invalid vehicle ID");
-    }
-
-    const vehicleData = await invModel.getInventoryById(inv_id);
-
-    if (!vehicleData) {
-      const nav = await utilities.getNav();
-      return res.render("errors/error", {
-        title: "Vehicle Not Found",
-        message: "Sorry, the requested vehicle could not be found.",
-        nav,
-        status: 404
-      });
-    }
-
-    const vehicleHTML = utilities.buildInventoryDetail(vehicleData);
-    const nav = await utilities.getNav();
-
-    res.render("inventory/detail", {
-      title: `${vehicleData.inv_make} ${vehicleData.inv_model}`,
-      vehicleHTML,
-      nav
-    });
+    const sql = `
+      SELECT inv_id, inv_make, inv_model, inv_year, inv_price, inv_miles,
+             inv_color, inv_description, inv_type, inv_image
+      FROM public.inventory
+      WHERE inv_id = $1
+    `;
+    const result = await pool.query(sql, [invId]);
+    return result.rows.length ? result.rows[0] : null;
   } catch (error) {
-    next(error);
+    console.error("getInventoryById error:", error.message);
+    throw error;
   }
 }
 
-module.exports = { buildByInventoryId };
-
-
+module.exports = { getInventoryById };
