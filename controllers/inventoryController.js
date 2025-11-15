@@ -1,24 +1,25 @@
-// models/inventory-model.js
-const pool = require("../database/");
+// src/controllers/inventoryController.js
+const invModel = require("../models/inventory-model");
 
 /**
- * Get a single vehicle by inventory id
- * Uses a prepared statement to prevent SQL injection
+ * Controller: buildByInventoryId
+ * Fetches a vehicle by its inventory ID and renders or returns JSON
  */
-async function getInventoryById(invId) {
+async function buildByInventoryId(req, res) {
   try {
-    const sql = `
-      SELECT inv_id, inv_make, inv_model, inv_year, inv_price, inv_miles,
-             inv_color, inv_description, inv_type, inv_image
-      FROM public.inventory
-      WHERE inv_id = $1
-    `;
-    const result = await pool.query(sql, [invId]);
-    return result.rows.length ? result.rows[0] : null;
+    const invId = req.params.invId;
+    const vehicle = await invModel.getInventoryById(invId);
+
+    if (!vehicle) {
+      return res.status(404).send("Vehicle not found");
+    }
+
+    // For now, just send JSON. Later you can render a view.
+    res.json(vehicle);
   } catch (error) {
-    console.error("getInventoryById error:", error.message);
-    throw error;
+    console.error("buildByInventoryId error:", error.message);
+    res.status(500).send("Server error");
   }
 }
 
-module.exports = { getInventoryById };
+module.exports = { buildByInventoryId };
