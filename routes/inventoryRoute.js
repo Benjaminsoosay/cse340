@@ -3,4 +3,4 @@ const express = require("express");
 const app = express();
 const inventoryRoute = require("./routes/inventoryRoute");
 
-app.use("/", inventoryRoute); // or app.use("/inventory", inventoryRoute);
+app.use("/", inventoryRoute); 
