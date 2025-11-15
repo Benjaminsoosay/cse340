@@ -1,9 +1,6 @@
+// src/server.js
 const express = require("express");
-const router = express.Router();
-const invController = require("../controllers/inventoryController");
+const app = express();
+const inventoryRoute = require("./routes/inventoryRoute");
 
-// Vehicle detail route
-router.get("/detail/:invId", invController.buildByInventoryId);
-
-module.exports = router;
-
+app.use("/", inventoryRoute); // or app.use("/inventory", inventoryRoute);
