@@ -1,42 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-  <%- include('partials/head') %>
+<head>
+  <meta charset="UTF-8">
+  <title>Home Page</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
 <body>
-  <%- include('partials/header') %>
-  <%- include('partials/nav') %>
+  <h1>Welcome to My Express App</h1>
+  <p>This is the index view rendered by Express using EJS.</p>
 
-  <main class="main-content">
-    <!-- Hero Section -->
-    <section class="hero">
-      <div class="hero-content">
-        <h2 class="hero-title">Quality Pre-Owned Vehicles</h2>
-        <p class="hero-subtitle">Find your perfect car at CSE Motors - where quality meets affordability</p>
-        <a href="/inventory" class="cta-button">Browse Inventory</a>
-      </div>
-    </section>
-
-    <!-- Featured Vehicles -->
-    <section class="featured-vehicles">
-      <div class="container">
-        <h2 class="section-title">Featured Vehicles</h2>
-        <div class="vehicles-grid">
-          <% featuredVehicles.forEach(vehicle => { %>
-            <div class="vehicle-card">
-              <div class="vehicle-image">
-                <img src="<%= vehicle.image %>" alt="<%= vehicle.name %>" loading="lazy">
-              </div>
-              <div class="vehicle-info">
-                <h3 class="vehicle-name"><%= vehicle.name %></h3>
-                <p class="vehicle-price"><%= vehicle.price %></p>
-                <button class="view-details-btn">View Details</button>
-              </div>
-            </div>
-          <% }); %>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <%- include('partials/footer') %>
+  <ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/about">About</a></li>
+    <li><a href="/contact">Contact</a></li>
+  </ul>
 </body>
 </html>

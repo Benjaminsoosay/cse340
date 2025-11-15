@@ -8,11 +8,13 @@
     "dev": "nodemon server.js"
   },
   "dependencies": {
-    "express": "^4.18.2",
-    "ejs": "^3.1.9",
+    "cors": "^2.8.5",
     "dotenv": "^17.2.3",
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
     "mongoose": "^8.19.2",
-    "cors": "^2.8.5"
+    "pg": "^8.16.3",
+    "swagger-ui-express": "^4.6.3"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
@@ -21,7 +23,9 @@
     "express",
     "ejs",
     "cars",
-    "dealership"
+    "dealership",
+    "mongodb",
+    "swagger"
   ],
   "author": "Benjamin Soosay Iwuchukwu",
   "license": "MIT",
