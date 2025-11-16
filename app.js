@@ -14,7 +14,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Routes
 app.use('/inventory', inventoryRouter);
 
-// Root route (homepage)
+// ✅ Root route (homepage)
 app.get("/", (req, res) => {
   res.render("index", { title: "Welcome to CSE Motors" });
 });
