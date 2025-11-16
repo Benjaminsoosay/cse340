@@ -1,64 +1,12 @@
-const utilities = {};
-
-// Format price with commas and USD symbol
-utilities.formatPrice = (price) => {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 0
-  }).format(price);
-};
-
-// Format mileage with commas
-utilities.formatMileage = (mileage) => {
-  return new Intl.NumberFormat('en-US').format(mileage);
-};
-
-// Build vehicle detail HTML
-utilities.buildVehicleDetail = (vehicleData) => {
-  const formattedPrice = utilities.formatPrice(vehicleData.price);
-  const formattedMileage = utilities.formatMileage(vehicleData.mileage);
-  
-  return `
-    <div class="vehicle-detail-container">
-      <div class="vehicle-image-section">
-        <img src="${vehicleData.image}" alt="${vehicleData.year} ${vehicleData.make} ${vehicleData.model}" class="vehicle-image">
-      </div>
-      
-      <div class="vehicle-info-section">
-        <h1 class="vehicle-title">${vehicleData.year} ${vehicleData.make} ${vehicleData.model}</h1>
-        
-        <div class="vehicle-pricing">
-          <span class="vehicle-price">${formattedPrice}</span>
-          <span class="vehicle-mileage">${formattedMileage} miles</span>
-        </div>
-        
-        <div class="vehicle-specs">
-          <div class="spec-item">
-            <span class="spec-label">Color:</span>
-            <span class="spec-value">${vehicleData.color}</span>
-          </div>
-        </div>
-        
-        <div class="vehicle-description">
-          <h3>Description</h3>
-          <p>${vehicleData.description}</p>
-        </div>
-        
-        <div class="vehicle-features">
-          <h3>Features</h3>
-          <ul class="features-list">
-            ${vehicleData.features.map(feature => `<li>${feature}</li>`).join('')}
-          </ul>
-        </div>
-        
-        <div class="vehicle-actions">
-          <button class="btn-primary">Contact Seller</button>
-          <button class="btn-secondary">Schedule Test Drive</button>
-        </div>
-      </div>
-    </div>
-  `;
-};
-
-module.exports = utilities;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/styles.css"><!-- optional -->
+</head>
+<body>
+  <h1><%= title %></h1>
+  <p>Welcome to the CSE Motors homepage. Use the navigation to explore inventory.</p>
+</body>
+</html>
