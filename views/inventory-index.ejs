@@ -1,6 +1,6 @@
 const utilities = {};
 
-// Format price with commas and USD symbol (Requirement 3)
+// Format price with commas and USD symbol
 utilities.formatPrice = (price) => {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -9,12 +9,12 @@ utilities.formatPrice = (price) => {
   }).format(price);
 };
 
-// Format mileage with commas (Requirement 9)
+// Format mileage with commas
 utilities.formatMileage = (mileage) => {
   return new Intl.NumberFormat('en-US').format(mileage);
 };
 
-// Build vehicle detail HTML (Requirement 6)
+// Build vehicle detail HTML
 utilities.buildVehicleDetail = (vehicleData) => {
   const formattedPrice = utilities.formatPrice(vehicleData.price);
   const formattedMileage = utilities.formatMileage(vehicleData.mileage);
@@ -48,7 +48,7 @@ utilities.buildVehicleDetail = (vehicleData) => {
         <div class="vehicle-features">
           <h3>Features</h3>
           <ul class="features-list">
-            ${vehicleData.features.map(feature => <li>${feature}</li>).join('')}
+            ${vehicleData.features.map(feature => `<li>${feature}</li>`).join('')}
           </ul>
         </div>
         
