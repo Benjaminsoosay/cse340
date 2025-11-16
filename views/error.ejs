@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/public/css/styles.css">
+</head>
+<body>
+  <h1>Error <%= error.status || 500 %></h1>
+  <p><%= message %></p>
+
+  <% if (error && error.stack) { %>
+    <pre><%= error.stack %></pre>
+  <% } %>
+
+  <a href="/">Return to Home</a>
+</body>
+</html>

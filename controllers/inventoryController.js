@@ -1,25 +1,65 @@
-// src/controllers/inventoryController.js
-const invModel = require("../models/inventory-model");
+const inventoryModel = require('../models/inventory-model');
+const utilities = require('../utilities');
 
-/**
- * Controller: buildByInventoryId
- * Fetches a vehicle by its inventory ID and renders or returns JSON
- */
-async function buildByInventoryId(req, res) {
+const inventoryController = {};
+
+// Vehicle detail
+inventoryController.getVehicleDetail = async (req, res, next) => {
   try {
-    const invId = req.params.invId;
-    const vehicle = await invModel.getInventoryById(invId);
-
-    if (!vehicle) {
-      return res.status(404).send("Vehicle not found");
+    const vehicleId = parseInt(req.params.id);
+    if (isNaN(vehicleId) || vehicleId <= 0) {
+      const error = new Error('Invalid vehicle ID');
+      error.status = 400;
+      throw error;
     }
 
-    // For now, just send JSON. Later you can render a view.
-    res.json(vehicle);
-  } catch (error) {
-    console.error("buildByInventoryId error:", error.message);
-    res.status(500).send("Server error");
-  }
-}
+    const vehicleData = await inventoryModel.getVehicleById(vehicleId);
+    if (!vehicleData) {
+      const error = new Error('Vehicle not found');
+      error.status = 404;
+      throw error;
+    }
 
-module.exports = { buildByInventoryId };
+    const vehicleHTML = utilities.buildVehicleDetail(vehicleData);
+
+    res.render('vehicle-detail', {
+      title: `${vehicleData.year} ${vehicleData.make} ${vehicleData.model}`,
+      vehicleHTML
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Error test
+inventoryController.triggerError = (req, res, next) => {
+  const error = new Error('This is a test error from the footer link');
+  error.status = 500;
+  next(error);
+};
+
+// Inventory list (updated with duplicate filtering)
+inventoryController.getInventoryList = async (req, res, next) => {
+  try {
+    // Fetch vehicles from the database
+    const vehicles = await inventoryModel.getAllVehicles();
+
+    // ✅ Remove duplicates by ID
+    const uniqueVehicles = vehicles.filter(
+      (v, index, self) => index === self.findIndex(u => u.id === v.id)
+    );
+
+    // Build HTML with only unique vehicles
+    const inventoryHTML = utilities.buildInventoryList(uniqueVehicles);
+
+    // Render the view
+    res.render('inventory-index', {
+      title: 'Vehicle Inventory',
+      inventoryHTML
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = inventoryController;

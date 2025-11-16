@@ -1,40 +1,88 @@
-function buildInventoryDetail(vehicle) {
-  if (!vehicle) {
-    return "<p>Vehicle not found</p>";
-  }
+// Utilities module
+const utilities = {};
 
-  // Format price with commas and dollar sign
-  const formattedPrice = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
+// Format price with commas and USD symbol (Requirement 3)
+utilities.formatPrice = (price) => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
     minimumFractionDigits: 0
-  }).format(vehicle.inv_price);
+  }).format(price);
+};
 
-  // Format mileage with commas
-  const formattedMileage = new Intl.NumberFormat("en-US").format(vehicle.inv_miles);
+// Format mileage with commas (Requirement 9)
+utilities.formatMileage = (mileage) => {
+  return new Intl.NumberFormat('en-US').format(mileage);
+};
 
+// Build inventory list HTML (Requirement 6 for list view)
+utilities.buildInventoryList = (vehicles) => {
+  let html = '<div class="vehicle-list">';
+  vehicles.forEach(vehicle => {
+    const formattedPrice = utilities.formatPrice(vehicle.price);
+    const formattedMileage = utilities.formatMileage(vehicle.mileage);
+
+    html += `
+      <div class="vehicle-card">
+        <a href="/inventory/vehicle/${vehicle.id}">
+          <img src="${vehicle.image}" alt="${vehicle.year} ${vehicle.make} ${vehicle.model}" class="vehicle-thumb">
+          <h2>${vehicle.year} ${vehicle.make} ${vehicle.model}</h2>
+        </a>
+        <p class="vehicle-price">${formattedPrice}</p>
+        <p class="vehicle-mileage">${formattedMileage} miles</p>
+        <p class="vehicle-color">Color: ${vehicle.color}</p>
+      </div>
+    `;
+  });
+  html += '</div>';
+  return html;
+};
+
+// Build vehicle detail HTML (Requirement 6 for detail view)
+utilities.buildVehicleDetail = (vehicleData) => {
+  const formattedPrice = utilities.formatPrice(vehicleData.price);
+  const formattedMileage = utilities.formatMileage(vehicleData.mileage);
+  
   return `
     <div class="vehicle-detail-container">
-      <div class="vehicle-image">
-        <img src="${vehicle.inv_image}" alt="${vehicle.inv_year} ${vehicle.inv_make} ${vehicle.inv_model}" class="img-fluid">
+      <div class="vehicle-image-section">
+        <img src="${vehicleData.image}" alt="${vehicleData.year} ${vehicleData.make} ${vehicleData.model}" class="vehicle-image">
       </div>
-      <div class="vehicle-info">
-        <h1>${vehicle.inv_year} ${vehicle.inv_make} ${vehicle.inv_model}</h1>
-        <div class="price-mileage">
-          <h2 class="price">${formattedPrice}</h2>
-          <p class="mileage">Mileage: ${formattedMileage} miles</p>
+      
+      <div class="vehicle-info-section">
+        <h1 class="vehicle-title">${vehicleData.year} ${vehicleData.make} ${vehicleData.model}</h1>
+        
+        <div class="vehicle-pricing">
+          <span class="vehicle-price">${formattedPrice}</span>
+          <span class="vehicle-mileage">${formattedMileage} miles</span>
         </div>
+        
         <div class="vehicle-specs">
-          <p><strong>Color:</strong> ${vehicle.inv_color}</p>
-          <p><strong>Description:</strong> ${vehicle.inv_description}</p>
-          <p><strong>Type:</strong> ${vehicle.inv_type}</p>
+          <div class="spec-item">
+            <span class="spec-label">Color:</span>
+            <span class="spec-value">${vehicleData.color}</span>
+          </div>
         </div>
-        <div class="contact-info">
-          <button class="btn btn-primary">Contact Us About This Vehicle</button>
+        
+        <div class="vehicle-description">
+          <h3>Description</h3>
+          <p>${vehicleData.description}</p>
+        </div>
+        
+        <div class="vehicle-features">
+          <h3>Features</h3>
+          <ul class="features-list">
+            ${vehicleData.features.map(feature => `<li>${feature}</li>`).join('')}
+          </ul>
+        </div>
+        
+        <div class="vehicle-actions">
+          <button class="btn-primary">Contact Seller</button>
+          <button class="btn-secondary">Schedule Test Drive</button>
         </div>
       </div>
     </div>
   `;
-}
+};
 
-module.exports = { buildInventoryDetail };
+module.exports = utilities;
