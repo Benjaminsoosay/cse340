@@ -1,12 +1,12 @@
+// inventory-model.js
 const { Pool } = require('pg');
 
-// ✅ Connection pool using your pgAdmin credentials
+// ✅ Connection pool using DATABASE_URL from environment variables
+// Locally: set DATABASE_URL in a .env file
+// On Render: set DATABASE_URL in the dashboard Environment tab
 const pool = new Pool({
-  user: 'vehicle_user',          // the role you created in pgAdmin
-  host: 'localhost',             // keep localhost if running locally
-  database: 'vehicle_inventory', // the database you created
-  password: 'Angelroll@12345',   // the password you set for vehicle_user
-  port: 5432                     // default Postgres port
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
 });
 
 const inventoryModel = {};
