@@ -14,6 +14,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Routes
 app.use('/inventory', inventoryRouter);
 
+// Root route (homepage)
+app.get("/", (req, res) => {
+  res.render("index", { title: "Welcome to CSE Motors" });
+});
+
 // Error handling middleware (must have 4 args)
 app.use((err, req, res, next) => {
   console.error(err.stack);
