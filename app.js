@@ -3,9 +3,9 @@ const path = require("path");
 const inventoryRouter = require("./routes/inventory");
 
 const app = express();
-const port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 
-// View engine setup
+// View engine setup (still available for other routes)
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
@@ -15,12 +15,12 @@ app.use(express.static(path.join(__dirname, "public")));
 // Routes
 app.use("/inventory", inventoryRouter);
 
-// ✅ Root route (homepage with EJS)
+// ✅ Root route (homepage without EJS dependency)
 app.get("/", (req, res) => {
-  res.render("index", { title: "Welcome to CSE Motors" });
+  res.send("<h1>Welcome to CSE Motors</h1><p>Your app is running successfully!</p>");
 });
 
-// ✅ Simple health check route (plain text)
+// ✅ Simple health check route
 app.get("/health", (req, res) => {
   res.send("App is running!");
 });
@@ -44,6 +44,6 @@ app.use((req, res) => {
 });
 
 // Start server
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
