@@ -1,7 +1,6 @@
-// src/models/projects.js
-import db from './db.js';   // default import
+import db from './db.js';
 
-export async function getAllProjects() {
+export const getAllProjects = async () => {
     const sql = `
         SELECT 
             p.project_id,
@@ -23,4 +22,4 @@ export async function getAllProjects() {
         console.error('Error in getAllProjects:', err);
         throw err;
     }
-}
+};

@@ -1,6 +1,6 @@
 import db from './db.js';   
 
-export async function getAllCategories() {
+export const getAllCategories = async () => {
     try {
         const result = await db.query('SELECT * FROM category ORDER BY name');
         return result.rows;
@@ -8,4 +8,4 @@ export async function getAllCategories() {
         console.error('Error fetching categories:', error);
         throw error;
     }
-}
+};
