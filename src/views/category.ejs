@@ -1,17 +1,17 @@
 <%- include('partials/header') %>
 
 <main>
-    <h1><%= title %></h1>
+    <h1><%= category.name %></h1>
+    
+    <h2>Service Projects in this Category</h2>
     
     <% if (projects.length > 0) { %>
         <ul class="project-list">
             <% projects.forEach(project => { %>
                 <li>
-                    <strong>
-                        <a href="/project/<%= project.project_id %>">
-                            <%= project.title %>
-                        </a>
-                    </strong>
+                    <a href="/project/<%= project.project_id %>">
+                        <%= project.title %>
+                    </a>
                     <br>
                     <small>
                         Organization: 
@@ -27,8 +27,10 @@
             <% }) %>
         </ul>
     <% } else { %>
-        <p>No upcoming service projects at this time.</p>
+        <p>No service projects currently in this category.</p>
     <% } %>
+    
+    <p><a href="/categories">Back to all categories</a></p>
 </main>
 
 <%- include('partials/footer') %>

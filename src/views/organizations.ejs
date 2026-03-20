@@ -1,14 +1,24 @@
 <%- include('partials/header') %>
 
-   <main>
-        <h1>organizations</h1>
-        <p>Here are a few of our partner organizations:</p>
-<ul>
-  <% organizations.forEach(organization => { %>
-                <li><img src="/images/<%= organization.logo_filename %>" alt="<%= organization.name %> logo"><strong><%= organization.name %></strong>: <%= organization.contact_email %></li>
-            <% }); %>
-  </li>
-</ul>
-    </main>
+<main>
+    <h1>Our Partner Organizations</h1>
     
-    <%- include('partials/footer') %>
+    <% if (organizations.length > 0) { %>
+        <ul>
+            <% organizations.forEach(org => { %>
+                <li>
+                    <strong>
+                        <a href="/organization/<%= org.organization_id %>">
+                            <%= org.name %>
+                        </a>
+                    </strong>: 
+                    <%= org.contact_email %>
+                </li>
+            <% }) %>
+        </ul>
+    <% } else { %>
+        <p>No organizations found.</p>
+    <% } %>
+</main>
+
+<%- include('partials/footer') %>
