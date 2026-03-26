@@ -30,6 +30,9 @@
         <% } else { %>
             <p><em>No categories assigned to this project.</em></p>
         <% } %>
+
+        <!-- Edit Categories Link -->
+        <p><a href="/project/<%= project.project_id %>/assign-categories">Edit Categories</a></p>
     </div>
     
     <p><a href="/projects">Back to all projects</a></p>
