@@ -15,8 +15,8 @@ import {
   showNewProjectForm,
   processNewProjectForm,
   projectValidation,
-  showEditProjectForm,       // added
-  processEditProjectForm      // added
+  showEditProjectForm,
+  processEditProjectForm
 } from './projects.js';
 import {
   showCategoriesPage,
@@ -28,42 +28,55 @@ import { testErrorPage } from './errors.js';
 
 const router = express.Router();
 
-// Main pages
+// ==================================================
+// MAIN PAGES (no dynamic parameters)
+// ==================================================
 router.get('/', showHomePage);
 router.get('/organizations', showOrganizationsPage);
 router.get('/projects', showProjectsPage);
 router.get('/categories', showCategoriesPage);
 
-// New organization form (static route must come before dynamic)
+// ==================================================
+// ORGANIZATION ROUTES
+// ==================================================
+// Static route: display new organization form
 router.get('/organization/new', showNewOrganizationForm);
-// POST route for new organization is now handled in server.js
-// router.post('/organization', organizationValidation, processNewOrganizationForm); // REMOVED
+// POST for new organization is handled in server.js (kept separate)
 
-// Edit organization form and processing
+// Edit organization routes (dynamic :id)
 router.get('/edit-organization/:id', showEditOrganizationForm);
 router.post('/edit-organization/:id', organizationValidation, processEditOrganizationForm);
 
-// New project routes – both GET and POST for /new-project
-router.get('/new-project', showNewProjectForm);                 // display form
-router.post('/new-project', projectValidation, processNewProjectForm); // handle submission
+// ==================================================
+// PROJECT ROUTES
+// ==================================================
+// Static routes for new project (must come before dynamic routes)
+router.get('/new-project', showNewProjectForm);
+router.post('/new-project', projectValidation, processNewProjectForm);
+// Alternative static route (optional)
+router.get('/project/new', showNewProjectForm);
 
-// (Optional) Alternative route if you still need /project/new – keep or remove as needed
-router.get('/project/new', showNewProjectForm); // may be removed if you consolidate to /new-project
-
-// Edit project routes – added
+// Edit project routes (dynamic :id)
 router.get('/edit-project/:id', showEditProjectForm);
-router.post('/edit-project/:id', processEditProjectForm);  // optionally add validation if needed
+router.post('/edit-project/:id', processEditProjectForm); // add validation if needed
 
-// Project category assignment routes
+// Project category assignment (dynamic :projectId)
 router.get('/project/:projectId/assign-categories', showAssignCategoriesForm);
 router.post('/project/:projectId/assign-categories', processAssignCategoriesForm);
 
-// Detail pages (dynamic)
+// ==================================================
+// DETAIL PAGES (dynamic :id)
+// ==================================================
 router.get('/organization/:id', showOrganizationDetailsPage);
-router.get('/project/:id', showProjectDetailsPage);
+router.get('/project/:id', showProjectDetailsPage);       // project details
 router.get('/category/:id', showCategoryDetailsPage);
 
-// Test route for errors
+// ==================================================
+// TEST ROUTE
+// ==================================================
 router.get('/test-error', testErrorPage);
+
+// No wildcard routes – all defined routes are explicit or use :id parameters.
+// 404 handling is delegated to the main server.js after this router.
 
 export default router;

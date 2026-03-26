@@ -87,12 +87,16 @@ app.post('/organization', async (req, res) => {
 });
 
 // -------------------------------------------------------------------
-// Mount the main router (all other routes)
+// Mount the main router (includes all project, category, and edit routes)
+// The router contains:
+//   GET /project/:id       (project details)
+//   GET /edit-project/:id  (edit project form)
+//   POST /edit-project/:id (process edit project form)
 // -------------------------------------------------------------------
 app.use(router);
 
 // -------------------------------------------------------------------
-// 404 and error handlers
+// 404 and error handlers – these must come AFTER all route definitions
 // -------------------------------------------------------------------
 app.use((req, res, next) => {
     const err = new Error('Page Not Found');
