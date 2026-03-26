@@ -1,13 +1,17 @@
 import db from '../db.js';
 
-// Get all projects
+/**
+ * Get all projects
+ * Returns id instead of project_id, name instead of title
+ */
 export const getAllProjects = async () => {
     const query = `
         SELECT 
-            project_id,
-            title,
+            id,
+            name,
             description,
-            created_at
+            created_at,
+            updated_at
         FROM projects
         ORDER BY created_at DESC
     `;
@@ -15,15 +19,17 @@ export const getAllProjects = async () => {
     return result.rows;
 };
 
-// Get upcoming projects (based on created_at, assuming new projects are "upcoming")
-// Adjust logic if you have a date field – otherwise this is a placeholder
+/**
+ * Get a limited number of recent projects (e.g., for "upcoming" section)
+ */
 export const getUpcomingProjects = async (limit = 5) => {
     const query = `
         SELECT 
-            project_id,
-            title,
+            id,
+            name,
             description,
-            created_at
+            created_at,
+            updated_at
         FROM projects
         ORDER BY created_at DESC
         LIMIT $1
@@ -32,26 +38,39 @@ export const getUpcomingProjects = async (limit = 5) => {
     return result.rows;
 };
 
-// Get projects by organization ID – this concept may not apply to your simple schema
-// If you don't need it, you can remove it, but I'll keep a placeholder.
+/**
+ * Get all projects belonging to a specific organization
+ */
 export const getProjectsByOrganizationId = async (organizationId) => {
-    // Since your projects table has no organization_id, this query would fail.
-    // For the assignment, you might not use this function. If you need it,
-    // you'll have to add an organization_id column to your projects table.
-    // For now, I'll return an empty array or throw an error.
-    throw new Error('Organization ID not supported in current schema');
+    const query = `
+        SELECT 
+            id,
+            name,
+            description,
+            created_at,
+            updated_at
+        FROM projects
+        WHERE organization_id = $1
+        ORDER BY created_at DESC
+    `;
+    const result = await db.query(query, [organizationId]);
+    return result.rows;
 };
 
-// Get single project details by ID
+/**
+ * Get a single project by its ID
+ */
 export const getProjectDetails = async (projectId) => {
     const query = `
         SELECT 
-            project_id,
-            title,
+            id,
+            name,
             description,
-            created_at
+            created_at,
+            updated_at,
+            organization_id
         FROM projects
-        WHERE project_id = $1
+        WHERE id = $1
     `;
     try {
         const result = await db.query(query, [projectId]);
@@ -63,16 +82,22 @@ export const getProjectDetails = async (projectId) => {
     }
 };
 
-// Create a new project
-export const createProject = async (title, description) => {
-    // Only include columns that exist in your projects table
+/**
+ * Create a new project
+ * @param {number} organizationId - ID of the organization this project belongs to
+ * @param {string} name - Project name (was 'title' in old schema)
+ * @param {string} description - Project description
+ * @returns {number} - The newly created project's ID
+ */
+export const createProject = async (organizationId, name, description) => {
+    // Insert into the new table structure
     const query = `
-        INSERT INTO projects (title, description, created_at)
-        VALUES ($1, $2, DEFAULT)
-        RETURNING project_id
+        INSERT INTO projects (organization_id, name, description, created_at, updated_at)
+        VALUES ($1, $2, $3, DEFAULT, DEFAULT)
+        RETURNING id
     `;
-    const params = [title, description];
+    const params = [organizationId, name, description];
     const result = await db.query(query, params);
     if (result.rows.length === 0) throw new Error('Failed to create project');
-    return result.rows[0].project_id;
+    return result.rows[0].id;
 };

@@ -33,6 +33,8 @@ const showOrganizationsPage = async (req, res) => {
 const showOrganizationDetailsPage = async (req, res) => {
     const organizationId = req.params.id;
     const organizationDetails = await getOrganizationDetails(organizationId);
+    // Added console.log to debug the organizationId value
+    console.log('organizationId value:', organizationId, 'type:', typeof organizationId);
     const projects = await getProjectsByOrganizationId(organizationId);
     const title = 'Organization Details';
     res.render('organization', { title, organizationDetails, projects });
