@@ -3,6 +3,9 @@
 <main>
     <h1><%= project.title %></h1>
     
+    <!-- Edit Project Link -->
+    <a href="/edit-project/<%= project.project_id %>" class="btn btn-primary">Edit Project</a>
+
     <div class="project-details">
         <p><strong>Organization:</strong> 
             <a href="/organization/<%= project.organization_id %>">

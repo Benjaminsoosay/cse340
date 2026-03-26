@@ -2,7 +2,8 @@
 import {
     getUpcomingProjects,
     getProjectDetails,
-    createProject
+    createProject,
+    updateProject                // <-- added import
 } from '../models/projects.js';
 import { getCategoriesByProjectId } from '../models/categories.js';
 import { getAllOrganizations } from '../models/organizations.js';
@@ -90,5 +91,38 @@ export const processNewProjectForm = async (req, res) => {
         console.error('Error creating new project:', error);
         req.flash('error', 'There was an error creating the service project.');
         res.redirect('/new-project');
+    }
+};
+
+// ------------------------------------------------------------------
+// Controller: Show the "Edit Project" form
+// ------------------------------------------------------------------
+export const showEditProjectForm = async (req, res) => {
+    const projectId = parseInt(req.params.id);
+    try {
+        const project = await getProjectDetails(projectId);
+        if (!project) {
+            return res.status(404).send('Project not found');
+        }
+        const organizations = await getAllOrganizations();
+        res.render('edit-project', { project, organizations });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error loading edit form');
+    }
+};
+
+// ------------------------------------------------------------------
+// Controller: Process the "Edit Project" form submission
+// ------------------------------------------------------------------
+export const processEditProjectForm = async (req, res) => {
+    const projectId = parseInt(req.params.id);
+    const { organizationId, name, description } = req.body;
+    try {
+        await updateProject(projectId, parseInt(organizationId), name, description);
+        res.redirect(`/project/${projectId}`); // matches the project details route
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error updating project');
     }
 };

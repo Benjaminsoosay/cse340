@@ -14,7 +14,9 @@ import {
   showProjectDetailsPage,
   showNewProjectForm,
   processNewProjectForm,
-  projectValidation
+  projectValidation,
+  showEditProjectForm,       // added
+  processEditProjectForm      // added
 } from './projects.js';
 import {
   showCategoriesPage,
@@ -47,6 +49,10 @@ router.post('/new-project', projectValidation, processNewProjectForm); // handle
 
 // (Optional) Alternative route if you still need /project/new – keep or remove as needed
 router.get('/project/new', showNewProjectForm); // may be removed if you consolidate to /new-project
+
+// Edit project routes – added
+router.get('/edit-project/:id', showEditProjectForm);
+router.post('/edit-project/:id', processEditProjectForm);  // optionally add validation if needed
 
 // Project category assignment routes
 router.get('/project/:projectId/assign-categories', showAssignCategoriesForm);

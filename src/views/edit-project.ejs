@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Project</title>
+</head>
+<body>
+    <h1>Edit Project</h1>
+    <form action="/edit-project/<%= project.id %>" method="post">
+        <div>
+            <label for="name">Project Name:</label>
+            <input type="text" id="name" name="name" value="<%= project.name %>" required>
+        </div>
+        <div>
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" rows="4"><%= project.description %></textarea>
+        </div>
+        <div>
+            <label for="organizationId">Organization:</label>
+            <select id="organizationId" name="organizationId" required>
+                <% organizations.forEach(org => { %>
+                    <option value="<%= org.id %>" <%= org.id === project.organization_id ? 'selected' : '' %>>
+                        <%= org.name %>
+                    </option>
+                <% }) %>
+            </select>
+        </div>
+        <button type="submit">Update Project</button>
+    </form>
+    <a href="/project/<%= project.id %>">Cancel</a>
+</body>
+</html>

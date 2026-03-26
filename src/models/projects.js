@@ -101,3 +101,25 @@ export const createProject = async (organizationId, name, description) => {
     if (result.rows.length === 0) throw new Error('Failed to create project');
     return result.rows[0].id;
 };
+
+/**
+ * Update an existing project
+ * @param {number} projectId - ID of the project to update
+ * @param {number} organizationId - New organization ID
+ * @param {string} name - New project name
+ * @param {string} description - New description
+ * @returns {number} - The updated project's ID
+ */
+export const updateProject = async (projectId, organizationId, name, description) => {
+    const query = `
+        UPDATE projects
+        SET organization_id = $1, name = $2, description = $3, updated_at = NOW()
+        WHERE id = $4
+        RETURNING id
+    `;
+    const result = await db.query(query, [organizationId, name, description, projectId]);
+    if (result.rows.length === 0) {
+        throw new Error(`Project with id ${projectId} not found`);
+    }
+    return result.rows[0].id;
+};
