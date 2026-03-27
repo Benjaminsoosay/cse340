@@ -8,6 +8,9 @@ import flash from './src/middleware/flash.js';
 // IMPORTANT: adjust this import to match your db.js export
 import pool from './src/db.js';   // <-- default export
 
+// Import category routes (adjust path if your file is elsewhere)
+import categoryRoutes from './routes/categoryRoutes.js';
+
 const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || 'production';
 const PORT = process.env.PORT || 3000;
 
@@ -85,6 +88,11 @@ app.post('/organization', async (req, res) => {
         res.render('organization-form', { organization: req.body, errors: {} });
     }
 });
+
+// -------------------------------------------------------------------
+// Mount category routes (must be before the main router to avoid conflicts)
+// -------------------------------------------------------------------
+app.use('/', categoryRoutes);
 
 // -------------------------------------------------------------------
 // Mount the main router (includes all project, category, and edit routes)
