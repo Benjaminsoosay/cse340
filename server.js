@@ -2,11 +2,9 @@ import express from 'express';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import session from 'express-session';
-import { pool, testConnection } from './src/db.js';          // ✅ named import for both pool and testConnection
+import { pool, testConnection } from './src/db.js';
 import router from './src/controllers/routes.js';
 import flash from './src/middleware/flash.js';
-
-// ✅ Correct path to categoryRoutes
 import categoryRoutes from './src/controllers/categoryRoutes.js';
 
 const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || 'production';
@@ -24,15 +22,19 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'src/views'));
 
+// Request logging middleware (development only)
 app.use((req, res, next) => {
     if (NODE_ENV === 'development') console.log(`${req.method} ${req.url}`);
     next();
 });
+
+// Set NODE_ENV in locals (always)
 app.use((req, res, next) => {
     res.locals.NODE_ENV = NODE_ENV;
     next();
 });
 
+// Session middleware
 app.use(session({
     secret: process.env.SESSION_SECRET || 'your-secret-key',
     resave: false,
@@ -40,6 +42,13 @@ app.use(session({
     cookie: { maxAge: 60 * 60 * 1000 }
 }));
 app.use(flash);
+
+// ✅ Add middleware to make user login status available in all views
+app.use((req, res, next) => {
+    res.locals.isLoggedIn = !!req.session.user;
+    res.locals.user = req.session.user || null;
+    next();
+});
 
 // -------------------------------------------------------------------
 // 1. Display the "Create Organization" form (static route)
@@ -86,12 +95,12 @@ app.post('/organization', async (req, res) => {
 });
 
 // -------------------------------------------------------------------
-// Mount category routes (must be before the main router to avoid conflicts)
+// Mount category API routes under /api/categories
 // -------------------------------------------------------------------
-app.use('/', categoryRoutes);   // ← mounted at root; adjust if needed
+app.use('/api/categories', categoryRoutes);   // ✅ API endpoints separate
 
 // -------------------------------------------------------------------
-// Mount the main router (includes all project, category, and edit routes)
+// Mount the main router (HTML routes)
 // -------------------------------------------------------------------
 app.use(router);
 
@@ -104,15 +113,31 @@ app.use((req, res, next) => {
     next(err);
 });
 
+// Error handler: send JSON for API requests, otherwise render HTML error page
 app.use((err, req, res, next) => {
     console.error('Error occurred:', err.message);
     console.error('Stack trace:', err.stack);
+
     const status = err.status || 500;
+
+    // If the request expects JSON (e.g., API routes), return JSON error
+    if (req.path.startsWith('/api/') || req.xhr || req.headers.accept?.includes('application/json')) {
+        res.status(status).json({
+            error: err.message,
+            status: status
+        });
+        return;
+    }
+
+    // Otherwise render the appropriate HTML error page
     const template = status === 404 ? '404' : '500';
     const context = {
         title: status === 404 ? 'Page Not Found' : 'Server Error',
         error: err.message,
-        stack: err.stack
+        stack: err.stack,
+        // These locals are already set, but we pass them again to ensure they are available
+        isLoggedIn: req.session?.user ? true : false,
+        user: req.session?.user || null
     };
     res.status(status).render(`errors/${template}`, context);
 });
