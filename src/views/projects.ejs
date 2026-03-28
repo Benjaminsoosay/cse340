@@ -1,0 +1,40 @@
+<%- include('partials/header') %>
+
+<main>
+    <h1><%= title %></h1>
+    <h2>Upcoming Service Projects</h2>
+
+    <div class="list-container"></div>
+    <ul>
+        <% projects.forEach(project => { %>
+            <span class="">
+                <li>
+                    <%# We use project.date here because of the 'AS date' alias in the model %>
+                    <%= new Date(project.date).toLocaleDateString('en-US', { 
+                            month: 'long', 
+                            day: 'numeric', 
+                            year: 'numeric' 
+                        }) %>: 
+                    
+                    <strong>
+                        <a href="/project/<%= project.project_id %>"><%= project.title %></a>
+                    </strong> 
+                    
+                    <i>
+                        (<a href="/organization/<%= project.organization_id %>"><%= project.organization_name %></a>)
+                    </i>
+                </li>
+            </span>
+        <% }); %>
+    </ul>
+
+    <section class="buttons">
+        <button>
+            <% if (user && user.role_name==='admin' ) { %>
+                <a href="/new-project"> Add a new project</a>
+            <% } %>
+        </button>
+    </section>
+</main>
+
+<%- include('partials/footer') %>

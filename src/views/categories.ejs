@@ -1,0 +1,25 @@
+<%- include('partials/header') %>
+
+<main class="category-page">
+    <h1><%= title %></h1>
+    
+    <div class="list-container">
+        <% categories.forEach(category => { %>
+            <a href="/category/<%= category.category_id %>" class="category-item">
+                <span class="category-name"><%= category.category_name %></span>
+                <span class="category-action">View Projects</span>
+            </a>
+        <% }); %>
+
+        <section class="buttons">
+            <button type="button">
+                <% if (user && user.role_name==='admin' ) { %>
+                    <a href="/new-category">Add New Category</a>
+                <% } %>
+            </button>
+        </section>
+    </div>
+
+</main>
+
+<%- include('partials/footer') %>

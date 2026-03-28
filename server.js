@@ -2,14 +2,12 @@ import express from 'express';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import session from 'express-session';
-import { testConnection } from './src/db.js';
+import { pool, testConnection } from './src/db.js';          // ✅ named import for both pool and testConnection
 import router from './src/controllers/routes.js';
 import flash from './src/middleware/flash.js';
-// IMPORTANT: adjust this import to match your db.js export
-import pool from './src/db.js';   // <-- default export
 
-// Import category routes (adjust path if your file is elsewhere)
-import categoryRoutes from './routes/categoryRoutes.js';
+// ✅ Correct path to categoryRoutes
+import categoryRoutes from './src/controllers/categoryRoutes.js';
 
 const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || 'production';
 const PORT = process.env.PORT || 3000;
@@ -61,7 +59,6 @@ app.post('/organization', async (req, res) => {
     try {
         const { name, description, contact_email, logo_filename } = req.body;
 
-        // Basic validation
         const errors = {};
         if (!name) errors.name = 'Name is required';
 
@@ -70,7 +67,6 @@ app.post('/organization', async (req, res) => {
             return res.render('organization-form', { organization: req.body, errors });
         }
 
-        // Insert into the 'organization' table
         const result = await pool.query(
             `INSERT INTO organization (name, description, contact_email, logo_filename)
              VALUES ($1, $2, $3, $4)
@@ -92,14 +88,10 @@ app.post('/organization', async (req, res) => {
 // -------------------------------------------------------------------
 // Mount category routes (must be before the main router to avoid conflicts)
 // -------------------------------------------------------------------
-app.use('/', categoryRoutes);
+app.use('/', categoryRoutes);   // ← mounted at root; adjust if needed
 
 // -------------------------------------------------------------------
 // Mount the main router (includes all project, category, and edit routes)
-// The router contains:
-//   GET /project/:id       (project details)
-//   GET /edit-project/:id  (edit project form)
-//   POST /edit-project/:id (process edit project form)
 // -------------------------------------------------------------------
 app.use(router);
 

@@ -1,0 +1,22 @@
+<%- include('partials/header') %>
+
+<main>
+    <h1>
+        <%= title %>
+    </h1>
+    <p>Here are a few of our partner organizations:</p>
+    <ul class="org-list">
+        <% organizations.forEach(organization => { %>
+        <li><img src="/images/<%= organization.logo_filename %>" alt="<%= organization.name %> logo"><strong><a href="/organization/<%= organization.organization_id %>"><%= organization.name %></a></strong> <%= organization.contact_email %></li>
+        <% }); %>
+    </ul>
+    <section class="buttons">
+        <button>
+            <% if (user && user.role_name==='admin' ) { %>
+                <a href="/new-organization">Add New Organization</a>
+            <% } %>
+        </button>
+    </section>
+</main>
+
+<%- include('partials/footer') %>
